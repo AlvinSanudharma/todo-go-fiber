@@ -2,13 +2,19 @@ package main
 
 import (
 	"database/sql"
+	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 func initDb() (*sql.DB, error) {
-	dns := "user=postgres.vqxvgfptkbsxfkzbiiti password=wddRRgS9Li97oZcG host=aws-1-ap-northeast-2.pooler.supabase.com port=6543 dbname=postgres"
+	dns := os.Getenv("DATABASE_URL")
+	if dns == "" {
+		log.Fatal("DATABASE_URL is not set")
+	}
 
 	db, err := sql.Open("postgres", dns)
 
@@ -28,6 +34,10 @@ func initDb() (*sql.DB, error) {
 }
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using OS env")
+	}
+	
 	db, err := initDb()
 
 	if err != nil {
