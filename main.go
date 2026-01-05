@@ -4,11 +4,22 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
+
+type Activity struct {
+	ID           int       `json:"id"`
+	Title        string    `json:"title"`
+	Category     string    `json:"category"`
+	Description  string    `json:"description"`
+	ActivityDate time.Time `json:"activity_date"`
+	Status       string    `json:"status"`
+	CreatedAt    time.Time `json:"created_at"`
+}
 
 func initDb() (*sql.DB, error) {
 	dns := os.Getenv("DATABASE_URL")
@@ -30,14 +41,14 @@ func initDb() (*sql.DB, error) {
 		return nil, err
 	}
 
-	return  db, nil
+	return db, nil
 }
 
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found, using OS env")
 	}
-	
+
 	db, err := initDb()
 
 	if err != nil {
